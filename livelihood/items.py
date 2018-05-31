@@ -7,24 +7,48 @@
 
 from scrapy import Field, Item
 
-class YouyuanItem(Item):
-    # 用户名
-    username = Field()
-    # 年龄
-    age = Field()
-    # 头像图片的链接
-    header_url = Field()
-    # 相册图片的链接
-    images_url = Field()
-    # 内心独白
+class Hf12345Item(Item):
+
+    # 信件编号
+    cardId = Field()
+    # 信件标题
+    title = Field()
+    # 信件类型 咨询：1 建议：2
+    type = Field()
+    # 信件来源
+    source = Field()
+    # 答复单位
+    reply = Field()
+    # 人气
+    hotCount = Field()
+    # 回复时间
+    replyDate = Field()
+    # 请求参数
+    isSearchPassWord = Field()
+    # 请求参数
+    tag = Field()
+    # 来信时间
+    createTime = Field()
+    # 信件内容
     content = Field()
-    # 籍贯
-    place_from = Field()
-    # 学历
-    education = Field()
-    #　兴趣爱好
-    hobby = Field()
-    # 个人主页
-    source_url = Field()
-    # 数据来源网站
-    sourec = Field()
+    # 回复内容
+    replyContent = Field()
+
+    def getType(self):
+        type = 0
+        if self['type'] == '咨询':
+            type = 1
+        elif self['type'] == '建议':
+            type = 2
+        return type
+
+    def getHotCount(self):
+        hot = -1;
+        try:
+            hot = int(self['hotCount'])
+        except:
+            pass
+        return hot
+
+    def __str__(self):
+        return 'id:%s,title:%s' % (self['cardId'], self['title'])

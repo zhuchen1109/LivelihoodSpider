@@ -5,19 +5,35 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-import json
+import logging
+import MySQLdb
+from settings import MYSQL
 
-class YouyuanPipeline(object):
+class HfPipeline(object):
     def __init__(self):
-        #self.lists = []
-        self.filename = open("youyuan.json", "w")
+        host = MYSQL.get('HOST')
+        port = MYSQL.get('PORT')
+        user = MYSQL.get('USER')
+        psw = MYSQL.get('PASSWORD')
+        name = MYSQL.get('DB')
+        self.sqlTable = MYSQL.get('TABLE')
+        self.mysqlConn = MySQLdb.connect(host=host, port=port, user=user, passwd=psw, db=name, charset='utf8')
+
 
     def process_item(self, item, spider):
-        content = json.dumps(dict(item), ensure_ascii=False) + "\n"
-        self.filename.write(content.encode("utf-8"))
-        #self.lists.append(content.encode("utf-8"))
+        try:
+            cursor = self.mysqlConn.cursor()
+            sql = 'insert into '+self.sqlTable+' (cardId, title, type, source, reply, hotCount, replyDate, ' \
+                    'isSearchPassWord, tag, createTime, content, replyContent) values ' \
+                    '(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+            cursor.execute(sql, [item['cardId'], item['title'], item.getType(), item['source'],
+                           item['reply'], item.getHotCount(), item['replyDate'], item['isSearchPassWord'], item['tag'],
+                           item['createTime'], item['content'], item['replyContent']])
+            self.mysqlConn.commit()
+            cursor.close()
+        except Exception as e:
+            logging.error('保存数据库出错:%s,item:%s' % (e, item))
         return item
 
     def close_spider(self, spider):
-
-        self.filename.close()
+        self.mysqlConn.close()
