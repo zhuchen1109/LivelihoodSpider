@@ -8,6 +8,7 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
+import os
 
 BOT_NAME = 'livelihood'
 
@@ -16,15 +17,17 @@ NEWSPIDER_MODULE = 'livelihood.spiders'
 
 
 # 使用了scrapy-redis里的去重组件，不使用scrapy默认的去重
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+DUPEFILTER_CLASS = "livelihood.hfdupefilter.HfRFPDupeFilter"
 # 使用了scrapy-redis里的调度器组件，不实用scrapy默认的调度器
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 # 使用队列形式
 SCHEDULER_QUEUE_CLASS = "scrapy_redis.queue.SpiderQueue"
 # 允许暂停，redis请求记录不丢失
 SCHEDULER_PERSIST = True
+# 开启种子过滤debug信息
+DUPEFILTER_DEBUG = True
 
-
+LOG_FILE = os.path.join(os.path.dirname(__file__) ,"logs/log.txt") #log信息输出到log.txt文件
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'livelihood (+http://www.yourdomain.com)'

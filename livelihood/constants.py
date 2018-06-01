@@ -1,0 +1,6 @@
+#coding=utf-8
+
+KEY_REQUEST_HF_ID = 'id'
+KEY_REQUEST_HF_TAG = 'tag'
+KEY_REQUEST_HF_SYS_RANDOM = 'sys_random'
+KEY_REQUEST_HF_ISSEARCHPASSWORD = 'isSearchPassWord'
