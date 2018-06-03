@@ -3,6 +3,7 @@
 import hashlib
 import urllib
 import urlparse
+import logging
 import tldextract
 from scrapy_redis.dupefilter import RFPDupeFilter
 from scrapy.utils.request import _fingerprint_cache
@@ -32,7 +33,7 @@ class HfRFPDupeFilter(RFPDupeFilter):
                     items.pop(KEY_REQUEST_HF_ISSEARCHPASSWORD)
                     body = urllib.urlencode(items)
             except Exception as e:
-                print e
+                logging.error('生成去重签名出错'+e)
                 pass
 
             fp = hashlib.sha1()
